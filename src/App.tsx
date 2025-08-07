@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import CardTodo from './components/cardTodo'
-import { statusTask } from './utiilities/constant';
+import { statusTask } from './utils/constant';
 import { useDebounce } from './hooks/useDebounce';
 
 export interface responseData {
@@ -19,6 +19,18 @@ function App() {
   const [search, setsearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
 
+  const handleDrop = (e: React.DragEvent, newStatus: responseData['status']) => {
+    const title = e.dataTransfer.getData('title')
+    setData(prev =>
+      prev.map(task =>
+        task.title === title ? { ...task, status: newStatus } : task
+      )
+    )
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
   
   const getData = async () => {
     try{
@@ -56,7 +68,13 @@ function App() {
     </div>
       <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-6 px-4 py-2'>
         {statusTask?.map((item) => (
-          <CardTodo key={item.key} bgColor={item.bgColor} status={item.status} data={searchData}/>
+          <CardTodo 
+            key={item.key} 
+            onDragOver={handleDragOver} 
+            onDrop={e => handleDrop(e, item?.status)} 
+            bgColor={item.bgColor} 
+            status={item.status} data={searchData}
+            />
         ))} 
       </div>
     </>

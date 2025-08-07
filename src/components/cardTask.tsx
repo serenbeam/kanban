@@ -9,8 +9,16 @@ interface CardProps {
 }
 
 const CardTask = ({title, status, type, dev}: CardProps) => {
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, title: string) => {
+    console.log(e.dataTransfer.setData('title', title))
+    e.dataTransfer.setData('title', title)
+
+  }
   return (
-    <div className='bg-white shadow-lg rounded-lg w-auto h-45 mt-4 mb-4 mr-4 ml-4'>
+    <div className='bg-white shadow-lg rounded-lg w-auto h-45 mt-4 mb-4 mr-4 ml-4' 
+      draggable
+      onDragStart={e => handleDragStart(e, title)}
+    >
       <p className='text-left ml-3 mr-3 mt-3 mb-2 font-semibold'>{title}</p>
       <p className='text-left ml-3 mb-3 mr-3'>{status}</p>
       <div className='flex row items-start px-2 text-sm font-semibold text-gray=800'>
